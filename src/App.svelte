@@ -3,6 +3,7 @@
     import meetups from './meetups/meetup-store.js'
     import Header from './components/Header.svelte'
     import Button from './components/Button.svelte'
+    import Error from './components/Error.svelte'
     import LoadingSpinner from './components/LoadingSpinner.svelte'
     import TextInput from './components/TextInput.svelte'
     import EditMeetup from './meetups/EditMeetup.svelte'
@@ -16,6 +17,7 @@
     let page = 'overview'
     let pageData = {}
     let isLoading = true
+    let error;
 
     fetch('https://meetus-76f91.firebaseio.com/meetups.json')
     .then(res => {
@@ -39,6 +41,7 @@
     })
     .catch(err => {
         isLoading = false
+        error = err
         console.log(err)
     })
 
@@ -65,6 +68,7 @@
         editedId = event.detail
     }
 
+    const clearError = () => { error = null }
 </script>
 
 <style>
@@ -72,6 +76,10 @@
         margin-top: 5rem;
     }
 </style>
+
+{#if error}
+     <Error message={error.message} on:close={clearError}/>
+{/if}
 
 <Header />
 
